@@ -1,0 +1,97 @@
+{% load humanize %}
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-size: 12px;
+        }
+
+
+        .product-border {
+            border-bottom: 1px solid black;
+            margin: 5px 0 5px 0;
+        }
+
+        .barcode-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            text-align: center;
+            margin-top: 1.5mm;
+            font-size: 10px;
+        }
+
+        .product-info {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .product-image {
+            text-align: center;
+        }
+
+        .product-image img {
+            max-width: 150px;
+            max-height: 100px;
+        }
+
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns with equal width */
+            gap: 5px; /* Spacing between elements */
+        }
+
+    </style>
+</head>
+<body>
+<div style="max-width: 260px">
+    <div style="display: flex; flex-direction: column; align-items: center">
+        <img src="{% static 'assets/logo.png' %}" width="80" height="80">
+    </div>
+    <div>Дата: {{ product_factory.finished_at|date:"d-m-Y"|default:'-' }} {{ product_factory.finished_at|date:"H:i"|default:'-' }}</div>
+    <div>Флорист: {{ product_factory.florist.get_full_name|default:'-' }}</div>
+    <div>
+        <div>----------------------------------------------------------------</div>
+        <div class="barcode-container">
+            <div class="product-info">{{ product_factory.name|default:'-' }}</div>
+            <div class="product-price">{{ product_factory.price|floatformat:"-0"|cut:","|intcomma:" "|default:'-' }} SUM
+            </div>
+            <div class="product-image">
+                <img src="{{ barcode_path }}">
+            </div>
+        </div>
+        <div>----------------------------------------------------------------</div>
+        <div class="products-container">
+            {% for factory_item in factory_items %}
+                {% with factory_item.warehouse_product as product %}
+                    <div class="products">
+                        <div style="margin-bottom: 5px">{{ product.product.name }}
+                            x {{ factory_item.count|intcomma:" "|decimal_dot }}
+                        </div>
+                    </div>
+                    {#                {% if not forloop.last %}#}
+                    {#                    <div class="product-border"></div>#}
+                    {#                {% endif %}#}
+
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <div>----------------------------------------------------------------</div>
+    </div>
+</div>
+</body>
+</html>

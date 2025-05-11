@@ -1,0 +1,46 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}
+    Логин
+{% endblock %}
+
+{% block content %}
+    <div class="col-xl-12">
+        <div class="auth-form">
+            <h4 class="text-center mb-4">Войти в аккаунт</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Логин</label>
+                    <div class="input-group"><span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input class="form-control" type="text" required="required" name="username"
+                               placeholder="Username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <div class="input-group"><span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        <input class="form-control" type="password" name="password" required="required"
+                               placeholder="*********">
+                        <div class="show-hide"><span class="show">                         </span></div>
+                    </div>
+                </div>
+                {% for e in form.non_field_errors %}
+                    <p>{{ e }}</p>
+                {% endfor %}
+
+                <div class="form-group mt-2">
+                    <button class="btn btn-primary btn-block" type="submit">Вход</button>
+                </div>
+            </form>
+            {#            <div class="new-account mt-3">#}
+            {#                <p>Don't have an account? <a class="text-primary" href="{% url 'accounts:register' %}">Sign up</a></p>#}
+            {#            </div>#}
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {#    <link href="{% static 'vendor/jqvmap/css/jqvmap.min.css' %}" rel="stylesheet">#}
+    {#        <link href="{% static 'vendor/bootstrap-select/dist/css/bootstrap-select.min.css' %}" rel="stylesheet">#}
+    {#    <link href="{% static 'css/style.css' %}" rel="stylesheet">#}
+    {#    <link href="{% static 'custom/css/style.css' %}" rel="stylesheet">#}
+    {#    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">#}
+
+    <style>
+        html {
+            font-size: 14px;
+        }
+
+        .content-body {
+            margin-left: 0 !important;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 1px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        th {
+            padding-top: 1px;
+            padding-bottom: 1px;
+            text-align: left;
+            {#background-color: #105cb2;#}
+            {#color: white;#}
+        }
+    </style>
+</head>
+
+<body>
+<div id="main-wrapper" style="padding: 0 5% 0 5%">
+    <!--**********************************
+        Content body start
+    ***********************************-->
+    <div class="content-body">
+        <div class="container-fluid">
+            <table class="table table-bordered table-responsive-md">
+                <thead>
+                <tr>
+                    <th><strong>#</strong></th>
+                    <th><strong>НАЗВАНИЕ</strong></th>
+                    <th><strong>КАТЕГОРИЯ</strong></th>
+                    <th><strong>ТИП ПРОДАЖИ</strong></th>
+                    <th><strong>ФЛОРИСТ</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td style="width: 5%;">{{ forloop.counter }}</td>
+                        <td>{{ product.name}}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.get_sales_type_display }}</td>
+                        <td>{{ product.florist.get_full_name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+</div>
+<script>
+    {#window.onload = function () {#}
+    {#    window.print();#}
+    {# }#}
+    document.addEventListener('DOMContentLoaded', function () {
+        window.print();
+    });
+</script>
+
+{#<script src="{% static 'vendor/global/global.min.js' %}"></script>#}
+<!-- custom -->
+{#<script src="{% static 'js/custom.min.js' %}"></script>#}
+{#<script src="{% static 'js/deznav-init.js' %}"></script>#}
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,102 @@
+{% load humanize %}
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        body {
+            font-size: 12px;
+        }
+
+        .products {
+        {#display: flex;#}{# justify-content: space-between;#}
+
+        }
+
+        .product-border {
+            border-bottom: 1px solid black;
+            margin: 5px 0 5px 0;
+        }
+
+        .total-cost-container {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width: 260px">
+    <div style="display: flex; flex-direction: column; align-items: center">
+        <img src="{% static 'assets/logo.png' %}" width="120" height="120">
+{#        <div style="margin-top: 5px;"><span style="font-size: 18px;">PALMA</span></div>#}
+    </div>
+    <h3>Номер заказа: <code>№{{ order.pk }}</code></h3>
+    <div><b>Имя клиента:</b> {{ order.client.get_full_name|default:'-' }}</div>
+    <div><b>Имя продавца:</b> {{ order.salesman.get_full_name|default:'-' }}</div>
+    <div>*******************************************</div>
+    <div><b>Дата:</b> {{ order.created_at|date:"d/m/Y"|default:'-' }}</div>
+    <div><b>Время создания:</b> {{ order.created_at|date:"H:i"|default:'-' }}</div>
+    {#    <div><b>Имя клиента:</b> {{ order.user.get_full_name }}</div>#}
+    <div><b>Номер телефона:</b> {{ order.client.phone_number|default:'-' }}</div>
+    <div>*******************************************</div>
+    <div>
+        <div>----------------------------------------------------------------</div>
+        {% for order_item in order_items %}
+            <div class="products">
+                <div style="margin-bottom: 5px"><b>{{ forloop.counter }}.</b> {{ order_item.product.name }}
+                    [{{ order_item.product.get_unit_type_display }}]
+                </div>
+                <div style="font-size: 10px; text-align: end">
+                    {{ order_item.count|intcomma|decimal_dot }} * {{ order_item.price|intcomma|decimal_dot }}
+                    = {{ order_item.total|intcomma|decimal_dot }}
+                </div>
+            </div>
+            {% if not forloop.last %}
+                <div class="product-border"></div>
+            {% endif %}
+        {% endfor %}
+        {% for order_item in order_item_product_factories %}
+            <div class="product-border"></div>
+            <div class="products">
+                <div style="margin-bottom: 5px"><b>{{ forloop.counter|add:order_item_count }}.</b> {{ order_item.product_factory.name }}
+                    [шт.]
+                </div>
+                <div style="font-size: 10px; text-align: end">
+                    {{ 1|intcomma|decimal_dot }} * {{ order_item.price|intcomma|decimal_dot }}
+                    = {{ order_item.price|intcomma|decimal_dot }}
+                </div>
+            </div>
+            {% if not forloop.last %}
+                <div class="product-border"></div>
+            {% endif %}
+        {% endfor %}
+        <div>----------------------------------------------------------------</div>
+        <div style="display: flex; justify-content: space-between">
+            <div><b>Сумма:</b></div>
+            <div>{{ order.total|intcomma|decimal_dot }}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <div><b>Скидка:</b></div>
+            <div>{{ order.discount|intcomma|decimal_dot }}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+            <div><b>Итого:</b></div>
+            <div><b>{{ order.get_total_with_discount|intcomma|decimal_dot }}</b></div>
+        </div>
+        <div>----------------------------------------------------------------</div>
+        <div style="display:flex; justify-content: center"><b style="font-size: 18px;">Спасибо за покупку!</b></div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        window.print();
+    });
+</script>
+
+
+</body>
+</html>

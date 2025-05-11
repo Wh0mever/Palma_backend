@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.caches.delete('{{ file_path }}')
+    </script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            {#align-items: center;#}
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 1.5mm;
+            margin-bottom: 20px;
+            font-size: 10px;
+        }
+
+        .product-info {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .product-image {
+            text-align: center;
+        }
+
+        .product-image img {
+            max-width: 125px;
+            max-height: 75px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="product-info" >{{ product.name }}</div>
+    <div class="product-price" >{{ product.price }} SUM
+    </div>
+    <div class="product-image" >
+        <img src="{{ file_path }}">
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        window.print();
+    });
+</script>
+</body>
+</html>

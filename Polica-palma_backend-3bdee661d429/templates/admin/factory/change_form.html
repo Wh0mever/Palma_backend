@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <div class="submit-row" >
+            {% if allow_btn %}
+            <a style="background-color: #00dd1c; padding: 10px 25px"  href="{% url 'admin:allow' original.id %}" class="button">Принять</a>
+            {% endif %}
+
+        {% if disallow_btn %}
+           <a style="background-color: #C20000; padding: 10px 25px"  href="{% url 'admin:disallow' original.id %}" class="button">Отклонить</a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
+html, body {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Manrope", sans-serif;
+  overflow: hidden;
+}
+
+html.dark img.main-logo {
+  filter: invert(1) contrast(100);
+}
+
+
+/* Loading circle */
+.loading-circle {
+  animation: loadingCircle 6s linear infinite;
+}
+
+
+/* Scroll */
+::-webkit-scrollbar {
+  width: 4px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background: #555;
+}
+
+
+/* Animation */
+@keyframes loadingCircle {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
