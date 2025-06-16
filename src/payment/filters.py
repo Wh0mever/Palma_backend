@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from src.payment.enums import PaymentModelType, OutlayType
 from src.payment.models import Payment, PaymentMethod, Outlay
-from src.orders.models import Client
+from src.order.models import Client
 
 User = get_user_model()
 
