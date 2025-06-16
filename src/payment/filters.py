@@ -36,7 +36,7 @@ class PaymentFilter(filters.FilterSet):
         queryset=User.objects.all()
     )
     client = filters.ModelMultipleChoiceFilter(
-        field_name="worker",
+        field_name="client",
         queryset=Client.objects.all()
     )
     is_debt = filters.BooleanFilter(
