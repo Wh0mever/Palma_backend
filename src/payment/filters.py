@@ -34,6 +34,10 @@ class PaymentFilter(filters.FilterSet):
         field_name="worker",
         queryset=User.objects.all()
     )
+    client = filters.ModelMultipleChoiceFilter(
+        field_name="worker",
+        queryset=Client.objects.all()
+    )
     is_debt = filters.BooleanFilter(
         field_name="is_debt"
     )
@@ -47,7 +51,8 @@ class PaymentFilter(filters.FilterSet):
 
     class Meta:
         model = Payment
-        fields = ['payment_method', 'payment_type', 'payment_model_type', 'outlay', 'created_user', 'worker', 'is_debt']
+        fields = ['payment_method', 'payment_type', 'payment_model_type', 'outlay',
+                  'client', 'created_user', 'worker', 'is_debt']
 
 
 class OutlayFilter(filters.FilterSet):
