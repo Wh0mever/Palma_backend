@@ -530,7 +530,7 @@ class OrderCompleteView(APIView):
             order.completed_user = request.user
             order.save()
             assign_compensation_from_orders_to_workers(order, order.salesman)
-            update_client_discount_percent(order.client)
+            # update_client_discount_percent(order.client)
             create_order_create_notification(order)
 
         return Response(status=200)

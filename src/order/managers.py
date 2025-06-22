@@ -383,7 +383,7 @@ class ClientQuerySet(FlagsQuerySet):
             )
         )
 
-    def with_order_total_sum_in_year(self, start_date=None, end_date=None):
+    def with_order_total_sum_in_year(self):
         from .models import Order
         from .models import OrderStatus
         from src.core.helpers import get_year_range
