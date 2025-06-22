@@ -42,7 +42,9 @@ class ClientSerializer(DynamicFieldsModelSerializer):
 
 class ClientWithSummarySerializer(ClientSerializer):
     orders_count = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
+    orders_count_in_year = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
     total_orders_sum = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
+    total_orders_sum_in_year = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
     total_orders_profit_sum = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
     debt = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
 
@@ -50,7 +52,9 @@ class ClientWithSummarySerializer(ClientSerializer):
         model = Client
         fields = ClientSerializer.Meta.fields + (
             'orders_count',
+            'orders_count_in_year',
             'total_orders_sum',
+            'total_orders_sum_in_year',
             'total_orders_profit_sum',
             'debt',
         )

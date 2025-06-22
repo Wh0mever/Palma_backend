@@ -1,11 +1,15 @@
 from django.contrib import admin
 
-from src.order.models import Order, OrderItem, Client, Department, OrderItemProductFactory
+from src.order.models import Order, OrderItem, Client, Department, OrderItemProductFactory, ClientDiscountLevel
+
+
+class ClientDiscountLevelInline(admin.TabularInline):
+    model = ClientDiscountLevel
 
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    pass
+    inlines = [ClientDiscountLevelInline]
 
 
 @admin.register(Order)

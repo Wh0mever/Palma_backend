@@ -382,3 +382,45 @@ class ClientQuerySet(FlagsQuerySet):
                 ), models.Value(0), output_field=models.DecimalField()
             )
         )
+
+    def with_order_total_sum_in_year(self, start_date=None, end_date=None):
+        from .models import Order
+        from .models import OrderStatus
+        from src.core.helpers import get_year_range
+
+        return self.annotate(
+            total_orders_sum_in_year=Coalesce(
+                models.Subquery(
+                    Order.objects.get_available().with_total_with_discount()
+                    .filter(
+                        models.Q(client_id=models.OuterRef('pk'))
+                        & ~models.Q(status=OrderStatus.CANCELLED)
+                        & models.Q(created_at__range=[get_year_range()])
+                    )
+                    .values('client_id')
+                    .annotate(total_sum=models.Sum('total_with_discount', default=0))
+                    .values('total_sum')[:1]
+                ), models.Value(0), output_field=models.DecimalField()
+            )
+        )
+
+    def with_orders_count_in_year(self):
+        from .models import Order
+        from .enums import OrderStatus
+        from src.core.helpers import get_year_range
+
+        return self.annotate(
+            orders_count_in_year=Coalesce(
+                models.Subquery(
+                    Order.objects.get_available()
+                    .filter(
+                        models.Q(client_id=models.OuterRef('pk'))
+                        & ~models.Q(status=OrderStatus.CANCELLED)
+                        & models.Q(created_at__range=[get_year_range()])
+                    )
+                    .values('client_id')
+                    .annotate(total_count=models.Count('id'))
+                    .values('total_count')[:1]
+                ), models.Value(0), output_field=models.DecimalField()
+            )
+        )

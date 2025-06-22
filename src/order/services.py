@@ -12,7 +12,8 @@ from src.factory.enums import ProductFactoryStatus
 from src.factory.models import ProductFactory
 from src.order.enums import OrderStatus
 from src.order.exceptions import NotEnoughProductsInOrderItemError, OrderHasReturnError, RestoreTimeExceedError
-from src.order.models import Order, OrderItem, OrderItemProductOutcome, OrderItemProductReturn, OrderItemProductFactory
+from src.order.models import Order, OrderItem, OrderItemProductOutcome, OrderItemProductReturn, OrderItemProductFactory, \
+    Client, ClientDiscountLevel
 from src.payment.enums import PaymentType
 from src.payment.models import Payment, PaymentMethod
 from src.product.models import Industry
@@ -24,6 +25,26 @@ from src.warehouse.services import reload_product_from_order_to_warehouse, get_a
     calculate_total_product_count_in_warehouse
 
 User = get_user_model()
+
+
+# ====================== Client ====================== #
+def calculate_client_discount_percent(client: Client):
+    client_orders_total_amount = Order.objects.get_available().filter(
+        models.Q(client=client)
+        & models.Q(status=OrderStatus.COMPLETED)
+    ).aggregate(total_amount=models.Sum('amount', default=0))['total_amount']
+    discount_level = ClientDiscountLevel.objects.filter(
+        orders_sum_to__gte=client_orders_total_amount
+    ).order_by('orders_sum_to').first()
+    return discount_level.discount_percent if discount_level else 0
+
+
+def update_client_discount_percent(client: Client):
+    if client.auto_discount_percent_change_enabled:
+        discount_percent = calculate_client_discount_percent(client)
+        if discount_percent > client.discount_percent:
+            client.discount_percent = discount_percent
+            client.save(update_fields=['discount_percent'])
 
 
 # ====================== Order ====================== #

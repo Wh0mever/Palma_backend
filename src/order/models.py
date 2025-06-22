@@ -36,6 +36,10 @@ class Client(FlagsModel, models.Model):
         default=0,
         verbose_name="Процент скидки"
     )
+    auto_discount_percent_change_enabled = models.BooleanField(
+        default=True,
+        verbose_name="Менять процент скидки автоматически"
+    )
 
     objects = ClientQuerySet.as_manager()
 
@@ -55,6 +59,33 @@ class Client(FlagsModel, models.Model):
         orders = Order.objects.get_available().filter(models.Q(client=self) & ~models.Q(status=OrderStatus.CANCELLED))
         total_debt = orders.aggregate(total_debt=models.Sum('debt', default=0)).get('total_debt')
         return total_debt
+
+
+class ClientDiscountLevel(models.Model):
+    client = models.ForeignKey(
+        'order.Client',
+        on_delete=models.CASCADE,
+        related_name='discount_levels',
+        verbose_name="Клиент"
+    )
+    orders_sum_to = models.DecimalField(
+        max_digits=17,
+        decimal_places=2,
+        default=0,
+        verbose_name="Сумма покупок"
+    )
+    discount_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0,
+        verbose_name="Процент скидки"
+    )
+
+    class Meta:
+        ordering = ('orders_sum_to',)
+        verbose_name = "Настройка скидок клиенту"
+        verbose_name_plural = "Настройка скидок клиентам"
+
 
 
 class Order(FlagsModel, models.Model):

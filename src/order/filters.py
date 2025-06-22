@@ -9,6 +9,14 @@ from src.product.models import Industry
 User = get_user_model()
 
 
+class ClientFilter(filters.FilterSet):
+    discount_percent = filters.RangeFilter(field_name='discount_percent')
+
+    class Meta:
+        model = Client
+        fields = ['discount_percent']
+
+
 class OrderFilter(filters.FilterSet):
     industry = filters.ModelMultipleChoiceFilter(
         # field_name='created_user__industry',

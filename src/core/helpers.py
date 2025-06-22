@@ -43,6 +43,17 @@ def try_parsing_date(text):
     raise ValueError('no valid date format found')
 
 
+def get_year_range(year: int = None):
+    """Returns start and end of given year. Defaults to current year."""
+    if year is None:
+        year = datetime.date.today().year
+
+    start_of_year = datetime.datetime(year, 1, 1)
+    end_of_year = datetime.datetime(year, 12, 31, 23, 59, 59, 999999)
+
+    return start_of_year, end_of_year
+
+
 def create_action_notification(obj_name: str, action: str, user: str, details: str = ""):
     try:
         message = f"Объект: {obj_name}.\n" \

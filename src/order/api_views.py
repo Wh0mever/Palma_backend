@@ -21,12 +21,13 @@ from src.base.api_views import (
     DestroyFlagsViewSetMixin, CustomPagination, PermissionPolicyMixin
 )
 from src.base.filter_backends import CustomDateTimeRangeFilter
-from src.core.helpers import send_order_notification, create_order_cancel_notification, create_order_create_notification
+from src.core.helpers import send_order_notification, create_order_cancel_notification, \
+    create_order_create_notification, get_year_range
 from src.factory.enums import ProductFactoryStatus
 from src.factory.models import ProductFactory
 from src.order.enums import OrderStatus
 from src.order.exceptions import NotEnoughProductsInOrderItemError, OrderHasReturnError, RestoreTimeExceedError
-from src.order.filters import OrderFilter
+from src.order.filters import OrderFilter, ClientFilter
 from src.order.models import Client, Order, OrderItem, Department, OrderItemProductReturn, OrderItemProductFactory
 from src.order.serializers import (
     ClientSerializer,
@@ -59,7 +60,7 @@ from src.order.services import (
     handle_order_item_count_change, add_product_factory_to_order, update_order_item_product_factory,
     delete_order_item_product_factory, return_order_item_product_factory, cancel_item_product_factory_return,
     assign_compensation_from_orders_to_workers, handle_order_item_price_change,
-    reassign_salesman_compensation_from_order, restore_order
+    reassign_salesman_compensation_from_order, restore_order, update_client_discount_percent
 )
 from src.payment.models import PaymentMethod, Payment
 from src.product.models import Product
@@ -84,9 +85,11 @@ class ClientViewSet(MultiSerializerViewSetMixin, DestroyFlagsViewSetMixin, Model
         'list': ClientWithSummarySerializer
     }
     filter_backends = [
-        filters.SearchFilter
+        filters.SearchFilter,
+        DjangoFilterBackend
     ]
     search_fields = ['full_name', 'phone_number']
+    filter_class = ClientFilter
 
 
 class OrderViewSet(MultiSerializerViewSetMixin, PermissionPolicyMixin, ModelViewSet):
@@ -183,6 +186,8 @@ class OrderViewSet(MultiSerializerViewSetMixin, PermissionPolicyMixin, ModelView
             .with_debt() \
             .with_orders_count() \
             .with_orders_total_sum() \
+            .with_order_total_sum_in_year() \
+            .with_orders_count_in_year() \
             .with_orders_total_profit().first()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -525,6 +530,7 @@ class OrderCompleteView(APIView):
             order.completed_user = request.user
             order.save()
             assign_compensation_from_orders_to_workers(order, order.salesman)
+            update_client_discount_percent(order.client)
             create_order_create_notification(order)
 
         return Response(status=200)
