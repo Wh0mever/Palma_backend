@@ -40,6 +40,10 @@ class ClientSerializer(DynamicFieldsModelSerializer):
         return value
 
 
+class ClientsSummarySerializer(serializers.Serializer):
+    total_count = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
+
+
 class ClientWithSummarySerializer(ClientSerializer):
     orders_count = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
     orders_count_in_year = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)

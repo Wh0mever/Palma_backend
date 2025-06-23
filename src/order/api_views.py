@@ -47,7 +47,8 @@ from src.order.serializers import (
     OrderItemProductFactoryUpdateSerializer,
     OrderItemProductFactoryCreateSerializer,
     OrderItemProductFactoryListSerializer, OrderItemProductFactoryReturnListSerializer,
-    OrderItemProductFactoryReturnCreateSerializer, OrderListSummarySerializer, ClientWithSummarySerializer
+    OrderItemProductFactoryReturnCreateSerializer, OrderListSummarySerializer, ClientWithSummarySerializer,
+    ClientsSummarySerializer
 )
 from src.order.services import (
     update_order_total,
@@ -82,14 +83,23 @@ class ClientViewSet(MultiSerializerViewSetMixin, DestroyFlagsViewSetMixin, Model
     queryset = Client.objects.get_available().with_debt().with_orders_total_sum().with_orders_count()
     serializer_class = ClientSerializer
     serializer_action_classes = {
-        'list': ClientWithSummarySerializer
+        'list': ClientWithSummarySerializer,
+        'get_summary': ClientsSummarySerializer,
     }
     filter_backends = [
         filters.SearchFilter,
         DjangoFilterBackend
     ]
     search_fields = ['full_name', 'phone_number']
-    filter_class = ClientFilter
+    filterset_class = ClientFilter
+
+    def get_summary(self, request):
+        clients = self.get_queryset()
+
+        response_data = {
+            'total_count': clients.count()
+        }
+        return self.get_serializer(response_data).data
 
 
 class OrderViewSet(MultiSerializerViewSetMixin, PermissionPolicyMixin, ModelViewSet):

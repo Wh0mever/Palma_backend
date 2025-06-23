@@ -26,6 +26,14 @@ urlpatterns = [
         name='client-detail'
     ),
     path(
+        "clients/summary/",
+        api_views.ClientViewSet.as_view(
+            {
+                "get": "get_summary",
+            }
+        )
+    ),
+    path(
         "departments/",
         api_views.DepartmentViewSet.as_view(
             {
