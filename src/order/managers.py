@@ -395,7 +395,7 @@ class ClientQuerySet(FlagsQuerySet):
                     .filter(
                         models.Q(client_id=models.OuterRef('pk'))
                         & ~models.Q(status=OrderStatus.CANCELLED)
-                        & models.Q(created_at__range=[get_year_range()])
+                        & models.Q(created_at__range=get_year_range())
                     )
                     .values('client_id')
                     .annotate(total_sum=models.Sum('total_with_discount', default=0))
@@ -416,7 +416,7 @@ class ClientQuerySet(FlagsQuerySet):
                     .filter(
                         models.Q(client_id=models.OuterRef('pk'))
                         & ~models.Q(status=OrderStatus.CANCELLED)
-                        & models.Q(created_at__range=[get_year_range()])
+                        & models.Q(created_at__range=get_year_range())
                     )
                     .values('client_id')
                     .annotate(total_count=models.Count('id'))
