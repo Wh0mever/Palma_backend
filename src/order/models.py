@@ -62,12 +62,6 @@ class Client(FlagsModel, models.Model):
 
 
 class ClientDiscountLevel(models.Model):
-    client = models.ForeignKey(
-        'order.Client',
-        on_delete=models.CASCADE,
-        related_name='discount_levels',
-        verbose_name="Клиент"
-    )
     orders_sum_to = models.DecimalField(
         max_digits=17,
         decimal_places=2,
