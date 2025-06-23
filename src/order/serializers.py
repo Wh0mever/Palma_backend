@@ -41,7 +41,7 @@ class ClientSerializer(DynamicFieldsModelSerializer):
 
 
 class ClientsSummarySerializer(serializers.Serializer):
-    total_count = serializers.DecimalField(max_digits=19, decimal_places=2, default=None)
+    total_count = serializers.IntegerField(default=None)
 
 
 class ClientWithSummarySerializer(ClientSerializer):
