@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters
 from rest_framework.generics import get_object_or_404
@@ -93,6 +94,22 @@ class ClientViewSet(MultiSerializerViewSetMixin, DestroyFlagsViewSetMixin, Model
     search_fields = ['full_name', 'phone_number']
     filterset_class = ClientFilter
 
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('discount_percent_min', in_=openapi.IN_QUERY, type=openapi.TYPE_NUMBER),
+            openapi.Parameter('discount_percent_max', in_=openapi.IN_QUERY, type=openapi.TYPE_NUMBER),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('discount_percent_min', in_=openapi.IN_QUERY, type=openapi.TYPE_NUMBER),
+            openapi.Parameter('discount_percent_max', in_=openapi.IN_QUERY, type=openapi.TYPE_NUMBER),
+        ]
+    )
     def get_summary(self, request):
         clients = self.get_queryset()
 
