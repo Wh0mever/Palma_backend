@@ -99,7 +99,7 @@ class ClientViewSet(MultiSerializerViewSetMixin, DestroyFlagsViewSetMixin, Model
         response_data = {
             'total_count': clients.count()
         }
-        return self.get_serializer(response_data).data
+        return Response(self.get_serializer(response_data).data)
 
 
 class OrderViewSet(MultiSerializerViewSetMixin, PermissionPolicyMixin, ModelViewSet):
