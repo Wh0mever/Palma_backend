@@ -28,7 +28,8 @@ class ClientSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Client
-        fields = 'id', 'full_name', 'phone_number', 'debt', 'comment', 'discount_percent', 'total_orders_sum'
+        fields = ('id', 'full_name', 'phone_number', 'debt', 'comment', 'discount_percent',
+                  'auto_discount_percent_change_enabled', 'total_orders_sum')
 
     def validate_phone_number(self, value):
         if Client.objects.get_available().filter(phone_number=value).exists():
