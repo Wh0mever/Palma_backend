@@ -122,7 +122,8 @@ def update_order_status(order: Order, status, user):
     with transaction.atomic():
         if order.status == status:
             return
-        elif status == 'CANCELLED':
+
+        if status == 'CANCELLED':
             reload_product_from_order_to_warehouse(order.pk)
             reload_product_factories_from_order_to_warehouse(order.pk)
             cancel_workers_incomes_from_order(order.pk)
@@ -133,7 +134,8 @@ def update_order_status(order: Order, status, user):
             #     user=user.get_full_name(),
             #     details=f"Сумма: {order.total - order.discount}"
             # )
-
+        elif status == 'COMPLETED':
+            update_client_discount_percent(order.client)
         order.status = OrderStatus[status.upper()]
         order.save()
 
