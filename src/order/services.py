@@ -29,9 +29,12 @@ User = get_user_model()
 
 # ====================== Client ====================== #
 def calculate_client_discount_percent(client: Client):
+    current_year = timezone.now().year
+
     client_orders_total_amount = Order.objects.get_available().filter(
         models.Q(client=client)
         & models.Q(status=OrderStatus.COMPLETED)
+        & models.Q(created_at__year=current_year)
     ).aggregate(total_amount=models.Sum('amount', default=0))['total_amount']
     discount_level = ClientDiscountLevel.objects.filter(
         orders_sum_to__gte=client_orders_total_amount
