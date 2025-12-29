@@ -72,6 +72,10 @@ class OrderItemFilter(filters.FilterSet):
         field_name='order__salesman',
         queryset=User.objects.all()
     )
+    product = filters.ModelMultipleChoiceFilter(
+        field_name='product',
+        queryset=Product.objects.all()
+    )
 
     class Meta:
         model = OrderItem
