@@ -2153,6 +2153,9 @@ class OrderItemsReportOrderItemFactoryList(DateTimeRangeFilterMixin, ListAPIView
         order_item_factories = order_items_report_factories(start_date, end_date)
         if self.request.user.type == UserType.MANAGER:
             order_item_factories = order_item_factories.by_industry(self.request.user.industry)
+
+        if 'product' in self.request.query_params:
+            order_item_factories = order_item_factories.none()
         return order_item_factories
 
 
@@ -2175,6 +2178,9 @@ class OrderItemsReport(DateTimeRangeFilterMixin, IndustryFilterMixin, ExportDisa
         if self.request.user.type == UserType.MANAGER:
             order_item_queryset = order_item_queryset.by_industry(self.request.user.industry)
             order_item_factory_queryset = order_item_factory_queryset.by_industry(self.request.user.industry)
+
+        if 'product' in self.request.query_params:
+            order_item_factory_queryset = order_item_factory_queryset.none()
         return order_item_queryset, order_item_factory_queryset
 
     @swagger_auto_schema(
