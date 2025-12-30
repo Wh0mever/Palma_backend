@@ -99,7 +99,7 @@ class ProductViewSet(MultiSerializerViewSetMixin, DestroyFlagsViewSetMixin, Mode
         qs = super().get_queryset()
         qs = qs.prefetch_related('warehouse_products', 'category__industry', 'income_items')
         qs = qs.get_available().with_in_stock()
-        if self.action != "get_for_sale_products" and self.request.user.type != UserType.SALESMAN:
+        if self.action != "get_for_sale_products" and self.request.user.type not in [UserType.SALESMAN, UserType.CASHIER]:
             qs = qs.by_user_industry(self.request.user)
         qs = qs.order_by('id')
         return qs
